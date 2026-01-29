@@ -1,0 +1,183 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>CodeSprint | Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+    tailwind.config = {
+        theme: {
+            extend: {
+                colors: {
+                    "primary-blue": "#3b82f6",
+                    "brand-light-blue": "#eff6ff",
+                    "glass-white": "rgba(255, 255, 255, 0.45)",
+                    "brand-blue": "#3b82f6",
+                },
+                fontFamily: {
+                    "sans": ["Plus Jakarta Sans", "sans-serif"]
+                },
+            },
+        },
+    }
+</script>
+<style type="text/tailwindcss">
+    body {
+        font-family: "Plus Jakarta Sans", sans-serif;
+        background: radial-gradient(at 0% 0%, #e0f2fe 0, transparent 50%), 
+                    radial-gradient(at 50% 0%, #ffffff 0, transparent 50%), 
+                    radial-gradient(at 100% 0%, #dbeafe 0, transparent 50%), 
+                    radial-gradient(at 0% 100%, #eff6ff 0, transparent 50%), 
+                    radial-gradient(at 50% 100%, #f0f9ff 0, transparent 50%), 
+                    radial-gradient(at 100% 100%, #e0f2fe 0, transparent 50%);
+        background-color: #f8fafc;
+    }
+    .glass-container {
+        background: rgba(255, 255, 255, 0.35);
+        backdrop-filter: blur(24px);
+        border-right: 1px solid rgba(255, 255, 255, 0.7);
+    }
+    .blue-gradient-panel {
+        background: linear-gradient(135deg, #e0f2fe 0%, #ffffff 50%, #dbeafe 100%);
+    }
+    .nav-item.active {
+        @apply bg-blue-600 text-white shadow-lg shadow-blue-200;
+    }
+    .nav-item.inactive {
+        @apply text-slate-500 hover:bg-white/50 hover:text-slate-800 transition-all;
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+        width: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: rgba(59, 130, 246, 0.1);
+        border-radius: 10px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+        background: rgba(59, 130, 246, 0.3);
+    }
+</style>
+</head>
+<body class="h-screen w-screen overflow-hidden flex">
+
+<aside class="w-[300px] h-full p-10 text-slate-800 flex flex-col glass-container shrink-0 z-10 hidden md:flex">
+    <div class="flex items-center gap-3 mb-10">
+        <div class="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center shadow-lg shadow-blue-200">
+            <span class="material-symbols-outlined text-white text-xl">rocket_launch</span>
+        </div>
+        <span class="font-extrabold text-2xl tracking-tight text-slate-900">CodeSprint</span>
+    </div>
+
+    <div class="mb-10 p-4 rounded-3xl bg-white/60 border border-white/80 shadow-sm flex items-center gap-4">
+        <div class="relative">
+            <img alt="User profile" class="w-14 h-14 rounded-2xl object-cover shadow-md" src="https://ui-avatars.com/api/?name={{ user.username }}&background=0D8ABC&color=fff"/>
+            <div class="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 border-2 border-white rounded-full"></div>
+        </div>
+        <div>
+            <h4 class="font-bold text-slate-900 leading-tight">{{ user.username }}</h4>
+            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Participant</p>
+        </div>
+    </div>
+
+    <nav class="space-y-2 mb-10 flex-grow">
+        <a class="nav-item active flex items-center gap-4 px-6 py-4 rounded-2xl font-bold transition-all" href="{% url 'event_feed' %}">
+            <span class="material-symbols-outlined">dashboard</span>
+            <span>Dashboard</span>
+        </a>
+        
+        <a class="nav-item inactive flex items-center gap-4 px-6 py-4 rounded-2xl font-bold transition-all" href="{% url 'my_registrations' %}">
+            <span class="material-symbols-outlined">event</span>
+            <span>My Events</span>
+        </a>
+
+        <form action="{% url 'logout' %}" method="post" class="mt-auto">
+            {% csrf_token %}
+            <button type="submit" class="w-full nav-item inactive flex items-center gap-4 px-6 py-4 rounded-2xl font-bold transition-all text-red-500 hover:text-red-600">
+                <span class="material-symbols-outlined">logout</span>
+                <span>Logout</span>
+            </button>
+        </form>
+    </nav>
+</aside>
+
+<main class="flex-1 blue-gradient-panel flex flex-col h-full overflow-hidden">
+    <header class="p-12 pb-6">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div>
+                <h2 class="text-4xl font-extrabold text-slate-900 tracking-tight">Upcoming Events</h2>
+                <p class="text-slate-500 font-medium mt-1">Discover your next big challenge and expand your skills.</p>
+            </div>
+            
+            <div class="flex items-center gap-3">
+                <div class="relative hidden md:block">
+                    <input class="bg-white/70 border-white/80 focus:ring-blue-500 focus:border-blue-500 rounded-2xl pl-10 pr-4 py-2.5 text-sm w-full md:w-64 shadow-sm border" placeholder="Search events..." type="text"/>
+                    <span class="material-symbols-outlined absolute left-3 top-2.5 text-slate-400 text-xl">search</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="flex-1 overflow-y-auto px-12 pb-12 custom-scrollbar">
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+            
+            {% for event in events %}
+            <div class="bg-white/70 backdrop-blur-sm rounded-[32px] p-6 border border-white/80 shadow-sm hover:shadow-2xl hover:shadow-blue-200/30 transition-all group flex flex-col h-full">
+                
+                <div class="h-44 bg-blue-50 rounded-2xl mb-5 overflow-hidden relative flex items-center justify-center">
+                    {% if event.banner %}
+                        <img src="{{ event.banner.url }}" alt="{{ event.title }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                    {% elif forloop.counter|divisibleby:2 %}
+                        <span class="material-symbols-outlined text-blue-200 text-6xl group-hover:scale-110 transition-transform duration-700">code_blocks</span>
+                    {% else %}
+                        <span class="material-symbols-outlined text-blue-200 text-6xl group-hover:scale-110 transition-transform duration-700">rocket_launch</span>
+                    {% endif %}
+                    
+                    <div class="absolute top-4 right-4 bg-white/95 backdrop-blur-md px-3 py-1.5 rounded-full text-[10px] font-bold text-blue-600 shadow-sm uppercase tracking-widest">
+                        Open
+                    </div>
+                </div>
+
+                <div class="space-y-4 flex-grow">
+                    <div class="flex items-center gap-2 text-blue-600 font-bold text-xs uppercase tracking-wider">
+                        <span class="material-symbols-outlined text-sm">calendar_today</span>
+                        <span>{{ event.date|date:"M d, Y" }}</span>
+                    </div>
+                    
+                    <a href="{% url 'event_detail' event.id %}" class="hover:text-blue-600 transition-colors">
+                        <h3 class="text-xl font-extrabold text-slate-900 leading-tight">{{ event.title }}</h3>
+                    </a>
+                    
+                    <div class="flex items-center gap-2 text-slate-500 text-xs font-semibold">
+                        <span class="material-symbols-outlined text-sm">location_on</span>
+                        <span>{{ event.location }}</span>
+                    </div>
+                    
+                    <p class="text-sm text-slate-500 line-clamp-3 leading-relaxed">
+                        {{ event.description|truncatewords:20 }}
+                    </p>
+                </div>
+
+                <div class="mt-6">
+                    <a href="{% url 'register_for_event' event.id %}" class="block w-full text-center py-3.5 bg-slate-900 text-white rounded-2xl font-bold text-sm hover:bg-slate-800 transition-all shadow-lg shadow-slate-200">
+                        Register Now
+                    </a>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-span-full text-center py-10">
+                <p class="text-slate-500 text-lg">No upcoming events found.</p>
+            </div>
+            {% endfor %}
+            </div>
+    </div>
+</main>
+
+</body>
+</html>

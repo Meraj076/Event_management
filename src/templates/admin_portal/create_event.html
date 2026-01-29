@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto bg-white p-10 rounded-3xl shadow-xl border border-blue-50">
+    <div class="mb-6 flex items-center">
+        <a href="{% url 'admin_dashboard' %}" class="group flex items-center gap-3 text-slate-500 hover:text-blue-600 transition-all font-bold underline text-sm">
+            <span>Back to Dashboard</span>
+        </a>
+    </div>
+    <h2 class="text-3xl font-extrabold mb-8 text-slate-800">Create New Event</h2>
+    
+    <form method="POST" enctype="multipart/form-data" class="space-y-6">
+        {% csrf_token %}
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+                <label class="block text-slate-700 font-bold mb-2">Event Title</label>
+                <input type="text" name="title" class="w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 outline-none" placeholder="e.g. Hackathon 2026" required>
+            </div>
+            <div>
+                <label class="block text-slate-700 font-bold mb-2">Organizer Name</label>
+                <input type="text" name="organizer_name" class="w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 outline-none" placeholder="e.g. Coding Club" required>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+                <label class="block text-slate-700 font-bold mb-2">Date & Time</label>
+                <input type="datetime-local" name="date" class="w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 outline-none" required>
+            </div>
+            <div>
+                <label class="block text-slate-700 font-bold mb-2">Location</label>
+                <input type="text" name="location" class="w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 outline-none" placeholder="e.g. Auditorium Hall" required>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+                <label class="block text-slate-700 font-bold mb-2">Contact Number</label>
+                <input type="text" name="contact_number" class="w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 outline-none" placeholder="+91 98765..." required>
+            </div>
+            <div>
+                <label class="block text-slate-700 font-bold mb-2">Max Capacity</label>
+                <input type="number" name="capacity" value="100" class="w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
+            </div>
+        </div>
+
+        <div>
+            <label class="block text-slate-700 font-bold mb-2">Description</label>
+            <textarea name="description" rows="4" class="w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Details about the event..."></textarea>
+        </div>
+
+        <div>
+            <label class="block text-slate-700 font-bold mb-2">Event Banner Image</label>
+            <div class="flex items-center justify-center w-full">
+                <label class="flex flex-col items-center justify-center w-full h-32 border-2 border-blue-300 border-dashed rounded-xl cursor-pointer bg-blue-50 hover:bg-blue-100 transition" id="banner-label">
+                    <div class="flex flex-col items-center justify-center pt-5 pb-6" id="banner-placeholder">
+                        <span class="material-symbols-outlined text-blue-500 text-3xl mb-2">cloud_upload</span>
+                        <p class="mb-2 text-sm text-slate-500"><span class="font-semibold">Click to upload</span> or drag and drop</p>
+                    </div>
+                    <img id="banner-preview" class="hidden w-full h-full object-cover rounded-lg" alt="Preview">
+                    <input name="banner" type="file" class="hidden" accept="image/*" id="banner-input" />
+                </label>
+            </div>
+        </div>
+
+        <script>
+            const bannerInput = document.getElementById('banner-input');
+            const bannerPreview = document.getElementById('banner-preview');
+            const bannerPlaceholder = document.getElementById('banner-placeholder');
+            const bannerLabel = document.getElementById('banner-label');
+
+            bannerInput.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        bannerPreview.src = event.target.result;
+                        bannerPreview.classList.remove('hidden');
+                        bannerPlaceholder.classList.add('hidden');
+                        bannerLabel.classList.remove('border-dashed', 'bg-blue-50', 'hover:bg-blue-100');
+                        bannerLabel.classList.add('border-solid', 'border-green-300', 'bg-green-50');
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        </script>
+
+        <button type="submit" class="w-full bg-slate-900 text-white font-bold py-4 rounded-xl hover:bg-slate-800 transition shadow-lg">
+            Create Event
+        </button>
+        
+    </form>
+
+</div>
+{% endblock %}
